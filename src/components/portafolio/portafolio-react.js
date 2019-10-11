@@ -9,11 +9,11 @@ export default class PortafolioReact extends Component {
             pageTitle: "Welcome to my portafolio",
             // isLoading: true,
             data: [
-                {title: "David", category: "eCommerce"},
-                {title: "Daniel", category: "Scheduling"},
-                {title: "Nallely", category: "Enterprise"},
-                {title: "Edith", category: "eCommerce"},
-                {title: "Ramon", category: "eCommerce"}
+                {title: "Quip", category: "eCommerce", slug: "quip"},
+                {title: "Eventbrite", category: "Scheduling", slug: "eventbrite"},
+                {title: "Ministry-safe", category: "Enterprise", slug: "ministry-safe"},
+                {title: "Swingaway", category: "eCommerce", slug: "swingaway"},
+                {title: "Swingaway", category: "eCommerce", slug: "swingaway"}
             ]
         };
         this.handleFilter = this.handleFilter.bind(this);
@@ -30,7 +30,7 @@ export default class PortafolioReact extends Component {
     PortafolioItems() {
 
         return this.state.data.map(item => {
-            return <PortafolioItem title={item.title} url={"google.com"}/>;
+            return <PortafolioItem title={item.title} url={"google.com"} slug={item.slug}/>;
         });
     }
 
