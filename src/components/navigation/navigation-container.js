@@ -9,12 +9,25 @@ export default class NavigationContainer extends Component {
     render() {
         return(
             <div>
-                <NavLink exact to="/">Home</NavLink>
-                <NavLink exact to="/about-me">About</NavLink>
-                <NavLink exact to="/contact">Contact</NavLink>
-                <NavLink exact to="/blog">Blog</NavLink>
-
-                { false ? <button>Add Blog</button> : null}
+                <div className="nav-wrapper">
+                    <div className="left-side">
+                        <div className="nav-link-wrapper">
+                            <NavLink exact to="/" activeClassName="nav-link-active">Home</NavLink>
+                        </div>
+                        <div className="nav-link-wrapper">
+                            <NavLink exact to="/about-me" activeClassName="nav-link-active">About</NavLink>
+                        </div>
+                        <div className="nav-link-wrapper">
+                            <NavLink exact to="/contact" activeClassName="nav-link-active">Contact</NavLink>
+                        </div>
+                        <div className="nav-link-wrapper">
+                            <NavLink exact to="/blog" activeClassName="nav-link-active">Blog</NavLink>
+                        </div>
+                    </div>
+                    <div className="right-side">
+                        DAVID MARTINEZ
+                    </div>
+                </div>
             </div>
         );
     }
