@@ -10,14 +10,32 @@ export default class PortafolioManager extends Component {
         this.state = {
             portafolioItems: []
         }
-        this.handleSuccessfulSubmission = this.handleSuccessfulSubmission.bind(this);
+        this.handleSuccessfulFormSubmission = this.handleSuccessfulFormSubmission.bind(this);
         this.handleFormSubmissionError = this.handleFormSubmissionError.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
     }
 
-    handleSuccessfulSubmission(portafolioItem){
-        //TODO
-        //update the portafolioItems state
-        //and add the portafolioItem to the list
+    handleDeleteClick(portafolioItem) {
+        axios
+        .delete(`https://api.devcamp.space/portfolio/portfolio_items/${portafolioItem.id}` ,
+        {withCredentials: true}
+        )
+        .then(response => {
+            this.setState({
+                portafolioItems: this.state.portafolioItems.filter(item => {
+                    return item.id !== portafolioItem.id;                    
+                })
+            });
+        }).catch(error => {
+            console.log("handleDeleteClick error", error);
+        })
+    }
+
+    handleSuccessfulFormSubmission(portafolioItem){
+
+        this.setState({
+            portafolioItems: [portafolioItem].concat(this.state.portafolioItems)
+        });
     }
 
     handleFormSubmissionError(error) {
@@ -25,7 +43,7 @@ export default class PortafolioManager extends Component {
     }
 
     getPortafolioItems() {
-        axios.get("https://davidmartinez.devcamp.space/portfolio/portfolio_items", 
+        axios.get("https://davidmartinez.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc", 
         {withCredentials: true
         }).then(response => {
             this.setState({
@@ -45,12 +63,14 @@ export default class PortafolioManager extends Component {
             <div className="portafolio-manager-wrapper">
                 <div className="left-column">
                     <PortafolioForm 
-                    handleSuccessfulSubmission={this.handleSuccessfulSubmission}
+                    handleSuccessfulFormSubmission={this.handleSuccessfulFormSubmission}
                     handleFormSubmissionError={this.handleFormSubmissionError}
                     />
                 </div>
                 <div className="right-column">
-                    <PortafolioSidebarLsit data={this.state.portafolioItems}/>
+                    <PortafolioSidebarLsit 
+                    handleDeleteClick={this.handleDeleteClick}
+                    data={this.state.portafolioItems}/>
                 </div>
             </div>
         );

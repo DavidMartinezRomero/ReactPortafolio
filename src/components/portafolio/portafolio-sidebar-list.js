@@ -1,14 +1,19 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PortafolioSidebarLsit = (props) => {
     const PortafolioList = props.data.map(portafolioItem => {
         return (
-            <div className="portafolio-item-thumb">
+            <div key={portafolioItem.id} className="portafolio-item-thumb">
                 <div className="portafolio-thumb-img">
                     <img src={portafolioItem.thumb_image_url} />
                 </div>
-                <h1 className="title">{portafolioItem.name}</h1>
-                <h2>{portafolioItem.id}</h2>
+                <div className="text-content">
+                    <div className="title">{portafolioItem.name}</div>
+                    <a className="delete-icon" onClick={() => props.handleDeleteClick(portafolioItem)}>
+                        <FontAwesomeIcon icon="trash" />
+                    </a>
+                </div>
             </div>
         )
     })

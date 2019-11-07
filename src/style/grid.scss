@@ -1,0 +1,9 @@
+.one-colum {
+    @include base-grid();
+    grid-template-columns: 1fr;
+}
+
+.two-colum {
+    @include base-grid();
+    grid-template-columns: 1fr 1fr;
+}
