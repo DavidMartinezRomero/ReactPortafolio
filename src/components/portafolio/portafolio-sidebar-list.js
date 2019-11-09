@@ -10,9 +10,17 @@ const PortafolioSidebarLsit = (props) => {
                 </div>
                 <div className="text-content">
                     <div className="title">{portafolioItem.name}</div>
-                    <a className="delete-icon" onClick={() => props.handleDeleteClick(portafolioItem)}>
-                        <FontAwesomeIcon icon="trash" />
-                    </a>
+                        <div className="actions">
+                            
+                            <a className="action-icon" onClick={() => props.handleEditClick(portafolioItem)}>
+                                <FontAwesomeIcon icon="edit" />
+                            </a>
+                            
+                            <a className="action-icon" onClick={() => props.handleDeleteClick(portafolioItem)}>
+                                <FontAwesomeIcon icon="trash" />
+                            </a>
+    
+                        </div>
                 </div>
             </div>
         )
