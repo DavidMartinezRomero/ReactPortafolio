@@ -11,7 +11,9 @@ export default class BlogForm extends Component {
             title: "",
             blog_status: "",
             content: "",
-            featured_image: ""
+            featured_image: "",
+            apiUrl: "https://davidmartinez.devcamp.space/portfolio/portfolio_blogs",
+            apiAction: "post"
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -21,8 +23,19 @@ export default class BlogForm extends Component {
         this.componentConfig = this.componentConfig.bind(this);
         this.djsConfig = this.djsConfig.bind(this);
         this.handleFeaturedImageDrop = this.handleFeaturedImageDrop.bind(this);
-
+        this.deleteImage = this.deleteImage.bind(this);
         this.featuredImageRef = React.createRef();
+    }
+
+    deleteImage(imageType) {
+        axios
+        .delete(`https://api.devcamp.space/portfolio/delete-portfolio-blog-image/${this.props.blog.id}?image_type=${imageType}`, 
+        {withCredentials: true}
+        ).then(response => {
+            this.props.handleFeaturedImageDelete();
+        }).catch(error => {
+            console.log("deleteImage error", error)
+        })
     }
 
     componentWillMount() {
@@ -30,8 +43,10 @@ export default class BlogForm extends Component {
             this.setState({
                 id: this.props.blog.id,
                 title: this.props.blog.title,
-                status: this.props.blog.status,
-                blog_status: this.props.blog.blog_status
+                blog_status: this.props.blog.blog_status,
+                content: this.props.blog.content,
+                apiUrl: `https://davidmartinez.devcamp.space/portfolio/portfolio_blogs/${this.props.blog.id}`,
+                apiAction: "patch"
             })
         }
     }
@@ -82,10 +97,13 @@ export default class BlogForm extends Component {
     }
 
     handleSubmit(event) {
-        axios.post("https://davidmartinez.devcamp.space/portfolio/portfolio_blogs", 
-        this.buildForm(), 
-        {withCredentials: true}
-        ).then(response => {
+        axios({
+            method: this.state.apiAction,
+            url: this.state.apiUrl,
+            data: this.buildForm(),
+            withCredentials: true
+        })
+            .then(response => {
             if(this.state.featured_image) {
                 this.featuredImageRef.current.dropzone.removeAllFiles();
             }
@@ -96,7 +114,13 @@ export default class BlogForm extends Component {
                 featured_image: ""
             });
 
-            this.props.handleSuccessfullFormSubmission(response.data.portfolio_blog);                    
+            if(this.props.editMode) {
+                // Update blog detail
+                this.props.handleUpdateFormSubmission(response.data.portfolio_blog);
+            } else {
+                this.props.handleSuccessfullFormSubmission(response.data.portfolio_blog);      
+            }
+
         }).catch(error => {
             console.log("handleSubmit error", error);
         })
@@ -128,11 +152,20 @@ export default class BlogForm extends Component {
                     <RichTextEditor 
                     handleRichTextEditorChange={this.handleRichTextEditorChange}
                     editMode={this.props.editMode}
-                    contentToEdit={this.props.editMode && this.props.blog.content ? this.props.blog.content : null}
+                    contentToEdit={this.props.editMode && this.props.blog.content ? 
+                        (this.props.blog.content) : null}
                     />
                 </div>
                 
                 <div className="image-uploadres">
+                    {this.props.editMode && this.props.blog.featured_image_url ?
+                        <div className="portafolio-manager-image-wrapper">
+                            <img src= {this.props.blog.featured_image_url} />
+
+                            <div className="image-removal-link">
+                                <a onClick={() => this.deleteImage("featured_image")}> Remove file </a> 
+                            </div>
+                        </div> : (
                     <DropzoneComponent 
                         ref={this.featuredImageRef}
                         config={this.componentConfig()}
@@ -141,6 +174,7 @@ export default class BlogForm extends Component {
                     >
                         <div className="dz-message">Featured image</div>
                     </DropzoneComponent>
+                    )}
                 </div>
 
                 <button type="submit" className="btn">Save</button>
